@@ -49,7 +49,7 @@ const Test = () => {
     <SafeAreaView>
       <FlatList
         data={movies}
-        renderItem={movie => renderItemComponent(movie)}
+        renderItem={movie => renderItemComponent(movie.item)}
         keyExtractor={movie => movie.id}
         ItemSeparatorComponent={() => <ItemSeparator />}
         refreshing={loading}
