@@ -9,12 +9,12 @@
 import React from 'react';
 import type {Node} from 'react';
 import {SafeAreaView} from 'react-native';
-import Test from './src/components/Test';
+import ListMovies from './src/components/Movies/ListMovies';
 
 const App: () => Node = () => {
   return (
     <SafeAreaView>
-      <Test />
+      <ListMovies />
     </SafeAreaView>
   );
 };

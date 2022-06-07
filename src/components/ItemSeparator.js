@@ -5,7 +5,7 @@ const ItemSeparator = () => {
   return (
     <View
       style={{
-        height: 20,
+        height: 10,
       }}></View>
   );
 };
