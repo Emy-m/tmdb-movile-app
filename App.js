@@ -10,6 +10,7 @@ import React from 'react';
 import type {Node} from 'react';
 import {SafeAreaView} from 'react-native';
 import ListMovies from './src/components/Movies/ListMovies';
+import Detail from './src/components/Detail';
 
 const App: () => Node = () => {
   return (
