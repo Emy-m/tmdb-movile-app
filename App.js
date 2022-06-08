@@ -15,7 +15,7 @@ import Detail from './src/components/Detail';
 const App: () => Node = () => {
   return (
     <SafeAreaView>
-      <ListMovies />
+      <Detail />
     </SafeAreaView>
   );
 };
