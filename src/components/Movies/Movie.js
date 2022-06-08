@@ -1,9 +1,13 @@
 import {TouchableOpacity, Text, Image, StyleSheet} from 'react-native';
 import React from 'react';
 
-const Movie = ({movie, baseUrl}) => {
+const Movie = ({handleDetail, movie, baseUrl}) => {
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity
+      onPress={() => {
+        handleDetail(movie.id);
+      }}
+      style={styles.container}>
       <Image
         source={{uri: baseUrl + 'original' + movie.poster_path}}
         style={{width: 200, height: 300}}

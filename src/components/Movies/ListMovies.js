@@ -5,7 +5,7 @@ import * as env from '../../environment/development';
 import Movie from './Movie';
 import HeaderMovieFilter from './HeaderMovieFilter';
 
-const ListMovies = () => {
+const ListMovies = ({navigation}) => {
   const [movies, setMovies] = useState([]);
   const [moviesFilter, setMoviesFilter] = useState(env.MOVIES_PATH[0]);
   const [config, setConfig] = useState(null);
@@ -45,8 +45,16 @@ const ListMovies = () => {
   );
 
   const renderHeaderComponent = (setFilter, actualFilter) => (
-    <HeaderMovieFilter setFilter={setFilter} actualFilter={actualFilter} />
+    <HeaderMovieFilter
+      handleDetail={handleDetail}
+      setFilter={setFilter}
+      actualFilter={actualFilter}
+    />
   );
+
+  const handleDetail = movie => {
+    navigation.navigate('Detail', {id: movie.id});
+  };
 
   return (
     <SafeAreaView>

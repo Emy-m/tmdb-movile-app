@@ -38,7 +38,9 @@ const Detail = (props: Props) => {
     setError(null);
     setLoading(true);
 
-    fetch(env.API_URL + '/movie/' + 338953 + '?api_key=' + env.API_KEY)
+    fetch(
+      'https://api.themoviedb.org/3/movie/338953?api_key=dfdf0b6612d100978455295b22cc7edc',
+    )
       .then(response => response.json())
       .then(json => {
         setMovie(json);
@@ -55,25 +57,13 @@ const Detail = (props: Props) => {
   const handleRefresh = () => {
     loadData();
   };
-
-  const renderItemComponent = movie => (
-    <TouchableOpacity>
-      <Text>{movie.overview}</Text>
-    </TouchableOpacity>
-  );
-
   //if (error) return <Error onRefresh={() => loadData()}></Error>;
 
-  return (
+  return movie ? (
     <SafeAreaView>
-      <FlatList
-        data={movie}
-        renderItem={movie => renderItemComponent(movie.item)}
-        keyExtractor={movie => movie.id}
-        refreshing={loading}
-        onRefresh={handleRefresh}></FlatList>
+      <Text>{movie.overview}</Text>
     </SafeAreaView>
-  );
+  ) : null;
 };
 export default Detail;
 
