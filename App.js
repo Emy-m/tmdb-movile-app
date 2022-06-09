@@ -22,7 +22,7 @@ const App: () => Node = () => {
         <Stack.Screen
           name="ListMovies"
           component={ListMoviesScreen}
-          options={{title: 'Movies', headerShown: false}}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="Detail"

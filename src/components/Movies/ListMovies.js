@@ -3,29 +3,34 @@ import ItemSeparator from '../ItemSeparator';
 import React, {useState, useEffect} from 'react';
 import * as env from '../../environment/development';
 import Movie from './Movie';
-import HeaderMovieFilter from './HeaderMovieFilter';
 
-const ListMovies = ({navigation}) => {
+const ListMovies = ({route, navigation}) => {
   const [movies, setMovies] = useState([]);
-  const [moviesFilter, setMoviesFilter] = useState(env.MOVIES_PATH[0]);
   const [config, setConfig] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const filter = env.MOVIES_PATH.find(
+    item => item.name === route.params.sortBy,
+  );
 
   useEffect(() => {
     fetchConfig();
     fetchMovies();
-  }, [moviesFilter]);
+  }, []);
 
   function fetchMovies() {
     setError(null);
     setLoading(true);
     setMovies([]);
 
-    fetch(env.API_URL + moviesFilter.url + '?api_key=' + env.API_KEY)
+    fetch(env.API_URL + filter.url + '?api_key=' + env.API_KEY)
       .then(response => response.json())
       .then(json => {
         setMovies(json.results);
+        setLoading(false);
+      })
+      .catch(error => {
+        setError(error);
         setLoading(false);
       });
   }
@@ -41,14 +46,10 @@ const ListMovies = ({navigation}) => {
   }
 
   const renderItemComponent = movie => (
-    <Movie movie={movie} baseUrl={config.images.base_url} />
-  );
-
-  const renderHeaderComponent = (setFilter, actualFilter) => (
-    <HeaderMovieFilter
+    <Movie
+      movie={movie}
       handleDetail={handleDetail}
-      setFilter={setFilter}
-      actualFilter={actualFilter}
+      baseUrl={config.images.base_url}
     />
   );
 
@@ -64,12 +65,7 @@ const ListMovies = ({navigation}) => {
         keyExtractor={movie => movie.id}
         ItemSeparatorComponent={() => <ItemSeparator />}
         refreshing={loading}
-        onRefresh={handleRefresh}
-        ListHeaderComponent={() =>
-          renderHeaderComponent(setMoviesFilter, moviesFilter)
-        }
-        stickyHeaderIndices={[0]}
-        stickyHeaderHiddenOnScroll={true}></FlatList>
+        onRefresh={handleRefresh}></FlatList>
     </SafeAreaView>
   );
 };
