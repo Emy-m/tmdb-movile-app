@@ -20,7 +20,7 @@ const Movie = ({handleDetail, movie, baseUrl}) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        handleDetail(movie.id);
+        handleDetail(movie);
       }}
       style={[backgroundStyle, styles.container]}>
       <Image
