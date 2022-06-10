@@ -12,6 +12,7 @@ import {
 import ItemSeparator from './ItemSeparator';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import * as env from '../environment/development';
+import Loading from "./Loading";
 
 interface Props {
   id: number;
@@ -32,17 +33,17 @@ const Detail = (props: Props) => {
   const [similars, setSimilars] = useState([]);
 
   useEffect(() => {
-    loadData().then(() => loadSimilars());
+    loadData();
   }, []);
 
   const loadData = () => {
     setError(null);
     setLoading(true);
-
     return fetch(env.API_URL + '/movie/' + props.id + '?api_key=' + env.API_KEY)
       .then(response => response.json())
       .then(json => {
-        setMovie(json);
+        console.log("Response movie:" + json);
+        loadSimilars(json);
       })
       .catch(error => {
         setError(error);
@@ -50,14 +51,18 @@ const Detail = (props: Props) => {
       });
   };
 
-  const loadSimilars = () => {
+  const loadSimilars = (movie) => {
     fetch(
       env.API_URL + '/movie/' + props.id + '/similar?api_key=' + env.API_KEY,
     )
       .then(response => response.json())
       .then(json => {
+        console.log("Response similars:" + json.results);
         setSimilars(json.results);
-        setLoading(false);
+        setMovie(movie);
+        setTimeout(() => {
+          setLoading(false);
+        }, 1200);
       })
       .catch(error => {
         setError(error);
@@ -81,7 +86,8 @@ const Detail = (props: Props) => {
     </TouchableOpacity>
   );
 
-  return movie ? (
+  return (
+    loading ? <Loading></Loading> :
     <SafeAreaView style={[backgroundStyle, styles.container]}>
       <Image
         source={{
@@ -106,7 +112,8 @@ const Detail = (props: Props) => {
         //onRefresh={handleRefresh}
       />
     </SafeAreaView>
-  ) : null;
+  );
+
 };
 export default Detail;
 
