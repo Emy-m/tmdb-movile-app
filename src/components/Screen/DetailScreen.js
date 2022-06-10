@@ -2,10 +2,10 @@ import {SafeAreaView} from 'react-native';
 import React from 'react';
 import Detail from '../Detail';
 
-const DetailScreen = () => {
+const DetailScreen = ({route}) => {
   return (
-    <SafeAreaView>
-      <Detail />
+    <SafeAreaView style={{flex: 1}}>
+      <Detail id={route.params.id} />
     </SafeAreaView>
   );
 };

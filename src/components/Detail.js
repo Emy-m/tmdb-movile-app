@@ -16,11 +16,17 @@ import ItemSeparator from './ItemSeparator';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import * as env from '../environment/development';
 
-const Detail = () => {
+interface Props {
+  id: number;
+}
+
+const Detail = (props: Props) => {
   const isDarkMode = useColorScheme() === 'dark';
   const textStyle = {
-    color: isDarkMode ? Colors.lighter : Colors.lighter,
+    color: isDarkMode ? Colors.darker : Colors.darker,
   };
+
+  console.log(props.id);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -38,9 +44,7 @@ const Detail = () => {
     setError(null);
     setLoading(true);
 
-    fetch(
-      'https://api.themoviedb.org/3/movie/338953?api_key=dfdf0b6612d100978455295b22cc7edc',
-    )
+    fetch(env.API_URL + '/movie/' + props.id + '?api_key=' + env.API_KEY)
       .then(response => response.json())
       .then(json => {
         setMovie(json);
@@ -61,7 +65,7 @@ const Detail = () => {
     fetch(
       env.API_URL +
         '/movie/' +
-        338953 +
+        props.id +
         '/similar?api_key=' +
         env.API_KEY +
         env.LANG,
