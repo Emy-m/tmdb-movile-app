@@ -5,11 +5,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  ActivityIndicator,
   useColorScheme,
-  View,
   Image,
-  Button,
 } from 'react-native';
 
 import ItemSeparator from './ItemSeparator';
@@ -23,56 +20,47 @@ interface Props {
 const Detail = (props: Props) => {
   const isDarkMode = useColorScheme() === 'dark';
   const textStyle = {
-    color: isDarkMode ? Colors.darker : Colors.darker,
+    color: isDarkMode ? Colors.lighter : Colors.darker,
   };
-
-  console.log(props.id);
+  const backgroundStyle = {
+    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  };
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [movie, setMovie] = useState(null);
-  const [config, setConfig] = useState(null);
   const [similars, setSimilars] = useState([]);
 
   useEffect(() => {
-    loadSimilars();
-    loadData();
-    loadConfig();
+    loadData().then(() => loadSimilars());
   }, []);
 
   const loadData = () => {
     setError(null);
     setLoading(true);
 
-    fetch(env.API_URL + '/movie/' + props.id + '?api_key=' + env.API_KEY)
+    return fetch(env.API_URL + '/movie/' + props.id + '?api_key=' + env.API_KEY)
       .then(response => response.json())
       .then(json => {
         setMovie(json);
+      })
+      .catch(error => {
+        setError(error);
         setLoading(false);
       });
   };
 
-  const loadConfig = () => {
-    fetch(env.CONFIGURATION_URL + env.API_KEY)
-      .then(response => response.json())
-      .then(json => setConfig(json));
-  };
-
   const loadSimilars = () => {
-    setError(null);
-    setLoading(true);
-
     fetch(
-      env.API_URL +
-        '/movie/' +
-        props.id +
-        '/similar?api_key=' +
-        env.API_KEY +
-        env.LANG,
+      env.API_URL + '/movie/' + props.id + '/similar?api_key=' + env.API_KEY,
     )
       .then(response => response.json())
       .then(json => {
         setSimilars(json.results);
+        setLoading(false);
+      })
+      .catch(error => {
+        setError(error);
         setLoading(false);
       });
   };
@@ -82,10 +70,10 @@ const Detail = (props: Props) => {
   };
 
   const renderItemComponent = similar => (
-    <TouchableOpacity>
+    <TouchableOpacity style={[backgroundStyle, styles.container]}>
       <Image
         source={{
-          uri: config.images.base_url + 'original' + similar.poster_path,
+          uri: env.IMAGES_PATH + 'original' + similar.poster_path,
         }}
         style={{width: 200, height: 300}}
       />
@@ -93,37 +81,32 @@ const Detail = (props: Props) => {
     </TouchableOpacity>
   );
 
-  //if (error) return <Error onRefresh={() => loadData()}></Error>;
+  return movie ? (
+    <SafeAreaView style={[backgroundStyle, styles.container]}>
+      <Image
+        source={{
+          uri: env.IMAGES_PATH + 'original' + movie.poster_path,
+        }}
+        style={{width: 200, height: 300}}
+      />
+      <Text style={[textStyle, styles.textTitle]}>{movie.title}</Text>
+      <Text style={[textStyle, styles.textRest]}>
+        {movie.runtime + 'min      ' + movie.release_date}
+      </Text>
+      <Text style={[textStyle, styles.textOverview]}>{movie.overview}</Text>
 
-  return (
-    movie,
-    config ? (
-      <SafeAreaView style={styles.container}>
-        <Image
-          source={{
-            uri: config.images.base_url + 'original' + movie.poster_path,
-          }}
-          style={{width: 200, height: 300}}
-        />
-        <Text style={[textStyle, styles.textTitle]}>{movie.title}</Text>
-        <Text style={[textStyle, styles.textRest]}>
-          {movie.runtime + 'min      ' + movie.release_date}
-        </Text>
-        <Text style={[textStyle, styles.textOverview]}>{movie.overview}</Text>
+      <Text style={[textStyle, styles.textRest]}>{'RELACIONADOS'}</Text>
 
-        <Text style={[textStyle, styles.textRest]}>{'RELACIONADOS'}</Text>
-
-        <FlatList
-          data={similars}
-          renderItem={similar => renderItemComponent(similar.item)}
-          keyExtractor={similar => similar.id}
-          ItemSeparatorComponent={() => <ItemSeparator />}
-          //refreshing={loading}
-          //onRefresh={handleRefresh}
-        />
-      </SafeAreaView>
-    ) : null
-  );
+      <FlatList
+        data={similars}
+        renderItem={similar => renderItemComponent(similar.item)}
+        keyExtractor={similar => similar.id}
+        ItemSeparatorComponent={() => <ItemSeparator />}
+        //refreshing={loading}
+        //onRefresh={handleRefresh}
+      />
+    </SafeAreaView>
+  ) : null;
 };
 export default Detail;
 

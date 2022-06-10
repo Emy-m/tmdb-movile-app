@@ -14,7 +14,7 @@ const ListMovies = ({route, navigation}) => {
   );
 
   useEffect(() => {
-    fetchConfig().then(() => fetchMovies());
+    fetchMovies();
   }, []);
 
   function fetchMovies() {
@@ -34,12 +34,6 @@ const ListMovies = ({route, navigation}) => {
       });
   }
 
-  function fetchConfig() {
-    return fetch(env.CONFIGURATION_URL + env.API_KEY)
-      .then(response => response.json())
-      .then(json => setConfig(json));
-  }
-
   function handleRefresh() {
     fetchMovies();
   }
@@ -48,7 +42,7 @@ const ListMovies = ({route, navigation}) => {
     <Movie
       movie={movie}
       handleDetail={handleDetail}
-      baseUrl={config.images.base_url}
+      baseUrl={env.IMAGES_PATH}
     />
   );
 
